@@ -355,7 +355,7 @@ document.getElementById('watchItems').innerHTML = watchlist.length
 }
 
 function showTab(id){
-['market','sbcs','totw','watchlist'].forEach(x => {
+['market','sbcs','special cards','watchlist'].forEach(x => {
 document.getElementById(x).classList.toggle('hidden', x !== id);
 });
 document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
