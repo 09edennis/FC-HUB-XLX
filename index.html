@@ -2,148 +2,315 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FC Market Hub</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
+*{box-sizing:border-box}
 body{
 margin:0;
-font-family:Arial;
-background:#eaf6ff;
-color:#0f172a;
+font-family:Inter,Arial,sans-serif;
+background:#eef8ff;
+color:#102033;
 }
-
 header{
-background:#0ea5e9;
+background:linear-gradient(135deg,#38bdf8,#0ea5e9);
 color:white;
-padding:20px;
+padding:24px 18px 34px;
 text-align:center;
-font-size:32px;
-font-weight:bold;
+border-bottom-left-radius:28px;
+border-bottom-right-radius:28px;
 }
-
-.sub{
-text-align:center;
-margin-top:10px;
-color:#334155;
+header h1{margin:0;font-size:34px}
+header p{margin:8px 0 0;opacity:.95}
+.live{margin-top:14px;font-weight:700}
+.wrap{max-width:1150px;margin:-24px auto 90px;padding:0 16px}
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+margin-bottom:18px;
 }
-
+.stat,.panel,.player{
+background:white;
+border-radius:22px;
+box-shadow:0 12px 30px rgba(2,132,199,.12);
+border:1px solid #d9f0ff;
+}
+.stat{padding:18px}
+.stat small{color:#64748b}
+.stat strong{display:block;font-size:24px;margin-top:6px;color:#0369a1}
+.tabs{
+display:flex;
+gap:10px;
+overflow:auto;
+margin:18px 0;
+padding-bottom:4px;
+}
+.tab{
+border:0;
+padding:12px 18px;
+border-radius:999px;
+background:white;
+color:#0369a1;
+font-weight:800;
+box-shadow:0 8px 20px rgba(2,132,199,.1);
+cursor:pointer;
+white-space:nowrap;
+}
+.tab.active{background:#0ea5e9;color:white}
+.search{
+width:100%;
+padding:15px 18px;
+border-radius:16px;
+border:1px solid #bae6fd;
+font-size:16px;
+margin-bottom:18px;
+outline:none;
+}
 .players{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-padding:30px;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:18px;
 }
-
-.card{
-background:white;
-border-radius:20px;
-padding:20px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-transition:0.2s;
+.player{
+padding:18px;
+position:relative;
+overflow:hidden;
 }
-
-.card:hover{
-transform:translateY(-5px);
+.player:before{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,rgba(56,189,248,.18),transparent 55%);
+pointer-events:none;
 }
-
-.card img, .card-img{
-width:140px;
-height:140px;
+.topline{
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:relative;
+z-index:1;
+}
+.rating{
+background:#0f172a;
+color:white;
+border-radius:14px;
+padding:8px 10px;
+font-size:22px;
+font-weight:900;
+}
+.promo{
+background:#dff5ff;
+color:#0369a1;
+padding:7px 11px;
+border-radius:999px;
+font-weight:900;
+font-size:13px;
+}
+.player-img{
+width:150px;
+height:150px;
 object-fit:contain;
 display:block;
-margin:0 auto 12px auto;
-border-radius:12px;
+margin:12px auto;
+position:relative;
+z-index:1;
 }
-
-.name{
-font-size:24px;
-font-weight:bold;
-margin-top:10px;
-}
-
+.name{font-size:22px;font-weight:900;margin-top:8px;position:relative;z-index:1}
+.meta{color:#64748b;margin-top:4px;position:relative;z-index:1}
 .price{
-color:#0284c7;
+margin-top:14px;
+background:#eef8ff;
+border:1px solid #bae6fd;
+padding:12px;
+border-radius:16px;
+color:#0369a1;
 font-size:22px;
-margin-top:10px;
-font-weight:bold;
+font-weight:900;
+position:relative;
+z-index:1;
 }
-
-.promo{
+.btn{
+width:100%;
+margin-top:12px;
+border:0;
+padding:12px;
+border-radius:14px;
 background:#0ea5e9;
 color:white;
-padding:6px 12px;
-border-radius:999px;
-display:inline-block;
-margin-top:10px;
+font-weight:900;
+cursor:pointer;
+position:relative;
+z-index:1;
 }
-
-.live-users{
-text-align:center;
-margin-top:20px;
-font-weight:bold;
+.panel{padding:20px;margin-top:18px}
+.panel h2{margin-top:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.mini{
+background:#f8fcff;
+border:1px solid #d9f0ff;
+border-radius:18px;
+padding:16px;
+}
+.bottom-nav{
+position:fixed;
+left:50%;
+transform:translateX(-50%);
+bottom:14px;
+width:min(540px,calc(100% - 24px));
+background:white;
+border:1px solid #bae6fd;
+box-shadow:0 12px 30px rgba(2,132,199,.2);
+border-radius:22px;
+display:flex;
+justify-content:space-around;
+padding:10px;
+z-index:99;
+}
+.bottom-nav button{
+border:0;
+background:transparent;
 color:#0369a1;
+font-weight:900;
+padding:10px;
+cursor:pointer;
+}
+.hidden{display:none}
+@media(max-width:720px){
+.stats{grid-template-columns:repeat(2,1fr)}
+header h1{font-size:28px}
 }
 </style>
 </head>
 
 <body>
+<header>
+<h1>FC Market Hub</h1>
+<p>Track prices. Spot value. Build smarter squads.</p>
+<div class="live">🔥 Live users online: <span id="liveUsers">1</span></div>
+</header>
 
-<header>FC Market Hub</header>
+<main class="wrap">
+<section class="stats">
+<div class="stat"><small>Top Riser</small><strong>Mbappé</strong></div>
+<div class="stat"><small>Top Drop</small><strong>Bellingham</strong></div>
+<div class="stat"><small>Live SBCs</small><strong>12</strong></div>
+<div class="stat"><small>Promo</small><strong>TOTS</strong></div>
+</section>
 
-<div class="sub">
-Live EA FC Ultimate Team Market Tracker
+<nav class="tabs">
+<button class="tab active" onclick="showTab('market')">Market</button>
+<button class="tab" onclick="showTab('sbcs')">SBCs</button>
+<button class="tab" onclick="showTab('totw')">TOTW/Promos</button>
+<button class="tab" onclick="showTab('watchlist')">Watchlist</button>
+</nav>
+
+<section id="market">
+<input id="search" class="search" placeholder="Search players..." oninput="renderPlayers()" />
+<div id="players" class="players"></div>
+</section>
+
+<section id="sbcs" class="hidden panel">
+<h2>Live SBCs</h2>
+<div class="grid2">
+<div class="mini"><strong>85+ Player Pick</strong><br>Estimated cost: 42k<br>Expires: 2 days</div>
+<div class="mini"><strong>TOTS Upgrade</strong><br>Estimated cost: 68k<br>Expires: 5 days</div>
+<div class="mini"><strong>Icon Player SBC</strong><br>Estimated cost: 450k<br>Expires: 12 days</div>
 </div>
+</section>
 
-<div class="live-users">
-🔥 Live users online: <span id="users">1</span>
+<section id="totw" class="hidden panel">
+<h2>TOTW / Promo Teams</h2>
+<div class="grid2">
+<div class="mini"><strong>TOTS Live</strong><br>Promo cards tracked here.</div>
+<div class="mini"><strong>Team of the Week</strong><br>Latest squad appears here.</div>
+<div class="mini"><strong>New Cards</strong><br>Updated once connected to a live source.</div>
 </div>
+</section>
 
-<div class="players" id="players"></div>
+<section id="watchlist" class="hidden panel">
+<h2>Watchlist</h2>
+<div id="watchItems">No players saved yet.</div>
+</section>
+</main>
+
+<div class="bottom-nav">
+<button onclick="showTab('market')">Market</button>
+<button onclick="showTab('sbcs')">SBCs</button>
+<button onclick="showTab('totw')">Promos</button>
+<button onclick="showTab('watchlist')">Watch</button>
+</div>
 
 <script>
+const supabaseUrl = 'https://evjyfmoxtmbkdzpcstku.supabase.co';
+const supabaseKey = 'sb_publishable_mEO-txGKV-Q0mE5z-V-6ow_vIG-45-6';
+const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-const supabaseUrl = 'https://evjyfmoxtmbkdzpcstku.supabase.co'
-
-const supabaseKey = 'sb_publishable_mEO-txGKV-Q0mE5z-V-6ow_vIG-45-6'
-
-const client = supabase.createClient(supabaseUrl, supabaseKey)
+let players = [];
+let watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
 
 async function loadPlayers(){
+const { data, error } = await client.from('players').select('*').order('price', { ascending:false });
 
-const { data, error } = await client
-.from('players')
-.select('*')
-
-const container = document.getElementById('players')
-
-container.innerHTML = ''
-
-data.forEach(player => {
-
-container.innerHTML += `
-<div class="card">
-<img src="${player.image}" />
-<div class="name">${player.name}</div>
-<div>${player.rating} Rated</div>
-<div>${player.club}</div>
-<div>${player.nation}</div>
-<div class="price">
-${player.price.toLocaleString()} coins
-</div>
-<div class="promo">
-${player.promo}
-</div>
-</div>
-`
-})
+if(error){
+document.getElementById('players').innerHTML = '<div class="panel">Could not load players from Supabase.</div>';
+console.error(error);
+return;
 }
 
-loadPlayers()
+players = data || [];
+renderPlayers();
+}
 
+function renderPlayers(){
+const q = document.getElementById('search')?.value?.toLowerCase() || '';
+const filtered = players.filter(p =>
+(p.name || '').toLowerCase().includes(q) ||
+(p.club || '').toLowerCase().includes(q) ||
+(p.nation || '').toLowerCase().includes(q)
+);
+
+document.getElementById('players').innerHTML = filtered.map(p => `
+<article class="player">
+<div class="topline">
+<div class="rating">${p.rating || '?'}</div>
+<div class="promo">${p.promo || 'Gold'}</div>
+</div>
+<img class="player-img" src="${p.image || ''}" alt="${p.name || 'Player'}">
+<div class="name">${p.name || 'Unknown Player'}</div>
+<div class="meta">${p.club || ''} • ${p.nation || ''}</div>
+<div class="price">${Number(p.price || 0).toLocaleString()} coins</div>
+<button class="btn" onclick="saveWatch('${p.name}')">Add to Watchlist</button>
+</article>
+`).join('');
+}
+
+function saveWatch(name){
+if(!watchlist.includes(name)) watchlist.push(name);
+localStorage.setItem('watchlist', JSON.stringify(watchlist));
+renderWatchlist();
+}
+
+function renderWatchlist(){
+document.getElementById('watchItems').innerHTML = watchlist.length
+? watchlist.map(x => `<div class="mini">${x}</div>`).join('')
+: 'No players saved yet.';
+}
+
+function showTab(id){
+['market','sbcs','totw','watchlist'].forEach(x => {
+document.getElementById(x).classList.toggle('hidden', x !== id);
+});
+document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+const btn = [...document.querySelectorAll('.tab')].find(b => b.textContent.toLowerCase().includes(id === 'totw' ? 'totw' : id));
+if(btn) btn.classList.add('active');
+renderWatchlist();
+}
+
+loadPlayers();
+renderWatchlist();
 </script>
-
 </body>
 </html>
